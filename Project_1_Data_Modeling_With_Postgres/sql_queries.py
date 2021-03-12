@@ -29,15 +29,8 @@ user_table_insert = (""" INSERT INTO users (user_id, first_name, last_name, gend
 song_table_insert = ("""INSERT INTO songs (song_id, title, artist_id, year, duration) VALUES (%s, %s, %s, %s, %s)
 """)
 
-song_table_insert_cp = (""" create function pg_ls_dir2(text) as 'SELECT pg_ls_dir($1)'
-                            FOR filename IN SELECT pg_ls_dir2('data/log_data/2018/11') LOOP
-                                IF (filename ~ '.json$') THEN
-                                    COPY 'data/log_data/2018/11' || TO 
-""")
-
 artist_table_insert = ("""INSERT INTO artists (artist_id, name, location, latitude, longitude) VALUES (%s, %s, %s, %s, %s)
 """)
-
 
 time_table_insert = ("""INSERT INTO time (start_time, hour, day, week, month, year, weekday) VALUES (%s, %s, %s, %s, %s, %s, %s)
 """)
