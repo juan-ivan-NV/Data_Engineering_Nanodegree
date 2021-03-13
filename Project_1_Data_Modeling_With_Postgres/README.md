@@ -6,26 +6,24 @@ A startup called Sparkify wants to analyze the data they've been collecting on s
 
 ## What Are Your Goals and Objectives?
 
-1.- To reate a Postgres DB schema and ETL pipeline to get tables designed for optimizing queeries on song play analysis, so we will focus on develop and complete different scripts that are described below. 
+1.- To create a Postgres DB schema and an ETL pipeline to obtain tables designed for optimizing queries on song play analysis, so we will focus on developing and complete different scripts described below. 
 
-2.- The analytics team wants to know, what songs users are listening to?
+## What is the purpuse of each script?
 
-## what is the purpuse of each script?
+* test.ipynb ► Displays the first few rows of each table to let you check your DB.
+* create_tables.py ► To delete, create or reset your tables.
+* etl.ipynb ► To read and process a single file from song_data and log_data and loads the data into DB tables.
+* etl.py ► To read and process files from song_data and log_data and loads them into your tables.
+* sql_queries.py ► Contains all your sql queries to create tables and insert data.
+* README.md ► General description of this project.
 
-* test.ipynb displays the first few rows of each table to let you check your db.
-* create_tables.py to drop, creates, or reset your tables.
-* etl.ipynb reads and processes a single file from song_data and log_data and loads the data into your tables.
-* etl.py reads and processes files from song_data and log_data and loads them into your tables.
-* sql_queries.py contains all your sql queries.
-* README.md General description of this project.
-
-## how to run the Python scripts?
+## How to run the Python scripts?
 
 In release order
 
-1.-> In a terminal type "python create_tables.py" to create your database and tables.
+1.-> In the terminal type "python create_tables.py" to create the tables in the DB.
 
-2.-> In a terminal type "python etl.py" ETL processes for each table.
+2.-> In a terminal type "python etl.py" ETL processes for each table, it also shows the tables and some info.
 
 3.-> To display all tables open test.ipynb and run all cells.
 
@@ -41,6 +39,8 @@ Dimension Tables:
 * songs: song_id, title, artist_id, year, duration.
 * artists: artist_id, name, location, latitude, longitude.
 * time: start_time, hour, day, week, month, year, weekday.
+
+
 
 
 
