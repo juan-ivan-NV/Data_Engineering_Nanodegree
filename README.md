@@ -1,0 +1,28 @@
+# Data Engineering Nanodegree
+
+## Basic study plan
+
+### 1 Welcome to the Nanodegree Program
+
+### 2 Data Modeling
+
+Learn to create relational and NoSQL data models to fit the diverse needs of data consumers. Use ETL to build databases in PostgreSQL and Apache Cassandra.
+
+* Project: Data Modeling with Postgres
+* Project: Data Modeling with Apache Cassandra
+
+### 3 Cloud Data Warehouses
+
+* Project: Data Warehouse
+
+### 4 Data Lakes with Spark
+
+* Project: Data Lake
+
+### 5 Data Pipelines with Airflow
+
+* Project: Data Pipelines
+
+### 6 Capstone Project
+
+* Project: Data Engineering Capstone Project
