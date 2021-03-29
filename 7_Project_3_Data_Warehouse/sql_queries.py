@@ -9,7 +9,7 @@ config.read('dwh.cfg')
 
 staging_events_table_drop = "DROP TABLE IF EXISTS staging_events;"
 staging_songs_table_drop = "DROP TABLE IF EXISTS staging_songs;"
-songplay_table_drop = "DROP TABLE IF EXISTS songplay;"
+songplay_table_drop = "DROP TABLE IF EXISTS songplays;"
 user_table_drop = "DROP TABLE IF EXISTS user;"
 song_table_drop = "DROP TABLE IF EXISTS song;"
 artist_table_drop = "DROP TABLE IF EXISTS artist;"
@@ -20,7 +20,7 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 staging_events_table_create= (""" CREATE TABLE IF NOT EXISTS staging_events (
                                     artist                   VARCHAR,
                                     auth                     VARCHAR,
-                                    first_name               VARCHAR,
+                                    firstName               VARCHAR,
                                     gender                   VARCHAR,
                                     itemInSession            INTEGER,
                                     lastName                 VARCHAR,
@@ -105,21 +105,50 @@ time_table_create = (""" CREATE TABLE IF NOT EXISTS time (
 
 # STAGING TABLES
 
-staging_events_copy = ("""
-""").format()
+staging_events_copy = (""" 
+                copy staging_events from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2' format as JSON {}
+                timeformat as 'epochmillisecs';
+""").format(config['S3']['LOG_DATA'], config['IAM_ROLE']['ARN'], config['S3']['LOG_JSONPATH'])
 
-staging_songs_copy = ("""
-""").format()
+staging_songs_copy = (""" 
+                copy staging_songs from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2' format as JSON 'auto';
+""").format(config['S3']['SONG_DATA'], config['IAM_ROLE']['ARN'])
 
 # FINAL TABLES
 
-songplay_table_insert = ("""
+songplay_table_insert = (""" 
+    INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
+    SELECT DISTINCT(se.ts)    songplay_id,
+           se.userId          user_id,
+           se.level,
+           ss.song_id,
+           ss.artist_id,
+           se.sessionId       session_id,
+           se.location,
+           se.userAgent       user_agent
+    FROM staging_events se JOIN
+    staging_songs ss ON (se.song = ss.title AND se.artist = ss.artist_name)
+    AND se.page == 'NextSong'     
+                            
 """)
 
 user_table_insert = ("""
+    INSERT INTO users (user_id, first_name, last_name, gender, level)
+    SELECT DISTINCT(userId)   user_id,
+           firstName          first_name,
+           lastName           last_name,
+           gender,
+           level
+    FROM staging_events
+    WHERE user_id IS NOT NULL AND page == 'NextSong'
+           
 """)
 
-song_table_insert = ("""
+song_table_insert = (""" 
 """)
 
 artist_table_insert = ("""
