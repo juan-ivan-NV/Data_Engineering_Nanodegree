@@ -132,8 +132,7 @@ songplay_table_insert = ("""
            se.userAgent       user_agent
     FROM staging_events se JOIN
     staging_songs ss ON (se.song = ss.title AND se.artist = ss.artist_name)
-    AND se.page == 'NextSong'     
-                            
+    AND se.page == 'NextSong';                           
 """)
 
 user_table_insert = ("""
@@ -144,17 +143,41 @@ user_table_insert = ("""
            gender,
            level
     FROM staging_events
-    WHERE user_id IS NOT NULL AND page == 'NextSong'
-           
+    WHERE user_id IS NOT NULL AND page == 'NextSong';
 """)
 
 song_table_insert = (""" 
+    INSERT INTO songs (song_id, title, artist_id, year, duration)
+    SELECT DISTINCT(song_id)  song_id,
+           title,
+           artist_id,
+           year,
+           duration
+    FROM staging_songs 
+    WHERE song_id IS NOT NULL;
 """)
 
 artist_table_insert = ("""
+    INSERT INTO artists (artist_id, name, location, lattitude, longitude)
+    SELECT DISTINCT(artist_id) artist_id,
+           artist_name         name,
+           artist_location     location,
+           artist_latitude     latitude,
+           artist_longitude    longitude
+    FROM staging_songs 
+    WHERE artist_id IS NOT NULL
 """)
 
-time_table_insert = ("""
+time_table_insert = (""" 
+    INSERT INTO time (start_time, hour, day, week, month, year, weekday)
+    SELECT DISTINCT(start_time)               start_time,
+           EXTRACT (hour FROM start_time)     hour,
+           EXTRACT (day FROM start_time)      day,
+           EXTRACT (week FROM start_time)     week,
+           EXTRACT (month FROM start_time)    month,
+           EXTRACT (year FROM start_time)     year,
+           EXTRACT (weekday FROM start_time)  weekday
+    FROM 
 """)
 
 # QUERY LISTS
