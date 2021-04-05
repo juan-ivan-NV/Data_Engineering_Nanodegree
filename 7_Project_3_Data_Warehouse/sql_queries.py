@@ -5,14 +5,21 @@ import configparser
 config = configparser.ConfigParser()
 config.read('dwh.cfg')
 
+# VARIABLES FROM dwh.cgf
+
+LOG_DATA = config.get("S3","LOG_DATA")
+LOG_JSONPATH = config.get("S3", "LOG_JSONPATH")
+SONG_DATA = config.get("S3", "SONG_DATA")
+IAM_ROLE = config.get("IAM_ROLE","ARN")
+
 # DROP TABLES
 
 staging_events_table_drop = "DROP TABLE IF EXISTS staging_events;"
 staging_songs_table_drop = "DROP TABLE IF EXISTS staging_songs;"
 songplay_table_drop = "DROP TABLE IF EXISTS songplays;"
-user_table_drop = "DROP TABLE IF EXISTS user;"
-song_table_drop = "DROP TABLE IF EXISTS song;"
-artist_table_drop = "DROP TABLE IF EXISTS artist;"
+user_table_drop = "DROP TABLE IF EXISTS users;"
+song_table_drop = "DROP TABLE IF EXISTS songs;"
+artist_table_drop = "DROP TABLE IF EXISTS artists;"
 time_table_drop = "DROP TABLE IF EXISTS time;"
 
 # CREATE TABLES
@@ -35,7 +42,7 @@ staging_events_table_create= (""" CREATE TABLE IF NOT EXISTS staging_events (
                                     status                   INTEGER,
                                     ts                       TIMESTAMP,                     
                                     userAgent                VARCHAR, 
-                                    userId                   INTEGER, 
+                                    userId                   INTEGER 
                                     )           
 """)
 
@@ -49,7 +56,7 @@ staging_songs_table_create = (""" CREATE TABLE IF NOT EXISTS staging_songs (
                                     song_id                  VARCHAR,
                                     title                    VARCHAR,
                                     duration                 FLOAT,
-                                    year                     INTEGER,
+                                    year                     INTEGER
                                     )
 """)
 
@@ -79,7 +86,7 @@ song_table_create = (""" CREATE TABLE IF NOT EXISTS songs (
                                     song_id                 VARCHAR SORTKEY PRIMARY KEY,
                                     title                   VARCHAR NOT NULL,
                                     artist_id               VARCHAR NOT NULL,
-                                    year                    INEGER NOT NULL,
+                                    year                    INTEGER NOT NULL,
                                     duration                FLOAT
                                     )
 """)
@@ -100,7 +107,8 @@ time_table_create = (""" CREATE TABLE IF NOT EXISTS time (
                                     week                   INTEGER NOT NULL,
                                     month                  INTEGER NOT NULL,
                                     year                   INTEGER NOT NULL,
-                                    weekday                VARCHAR NOT NULL)
+                                    weekday                VARCHAR NOT NULL
+                                    )
 """)
 
 # STAGING TABLES
@@ -110,19 +118,19 @@ staging_events_copy = ("""
                 credentials 'aws_iam_role={}'
                 region 'us-west-2' format as JSON {}
                 timeformat as 'epochmillisecs';
-""").format(config['S3']['LOG_DATA'], config['IAM_ROLE']['ARN'], config['S3']['LOG_JSONPATH'])
+""").format(LOG_DATA, IAM_ROLE, LOG_JSONPATH)
 
 staging_songs_copy = (""" 
                 copy staging_songs from {}
                 credentials 'aws_iam_role={}'
                 region 'us-west-2' format as JSON 'auto';
-""").format(config['S3']['SONG_DATA'], config['IAM_ROLE']['ARN'])
+""").format(SONG_DATA, IAM_ROLE)
 
 # FINAL TABLES
 
 songplay_table_insert = (""" 
     INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
-    SELECT DISTINCT(se.ts)    songplay_id,
+    SELECT DISTINCT(se.ts)    start_time,
            se.userId          user_id,
            se.level,
            ss.song_id,
@@ -165,7 +173,7 @@ artist_table_insert = ("""
            artist_latitude     latitude,
            artist_longitude    longitude
     FROM staging_songs 
-    WHERE artist_id IS NOT NULL
+    WHERE artist_id IS NOT NULL;
 """)
 
 time_table_insert = (""" 
@@ -177,7 +185,7 @@ time_table_insert = ("""
            EXTRACT (month FROM start_time)    month,
            EXTRACT (year FROM start_time)     year,
            EXTRACT (weekday FROM start_time)  weekday
-    FROM 
+    FROM songplays;
 """)
 
 # QUERY LISTS
