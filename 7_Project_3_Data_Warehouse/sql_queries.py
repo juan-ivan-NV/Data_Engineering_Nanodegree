@@ -27,7 +27,7 @@ time_table_drop = "DROP TABLE IF EXISTS time;"
 staging_events_table_create= (""" CREATE TABLE IF NOT EXISTS staging_events (
                                     artist                   VARCHAR,
                                     auth                     VARCHAR,
-                                    firstName               VARCHAR,
+                                    firstName                VARCHAR,
                                     gender                   VARCHAR,
                                     itemInSession            INTEGER,
                                     lastName                 VARCHAR,
@@ -187,6 +187,15 @@ time_table_insert = ("""
            EXTRACT (weekday FROM start_time)  weekday
     FROM songplays;
 """)
+
+# ANALYTICS QUERIES
+
+# Rows per table
+# Numer of uasers per level
+# Artist with more songs
+# Top songs from staging_events
+# Top artists from staging_events
+
 
 # QUERY LISTS
 
