@@ -6,7 +6,7 @@ A music streaming startup, Sparkify, has grown their user base and song database
 
 The task is to build an ETL pipeline that extracts their data from S3, stages them in Redshift, and transforms data into a set of dimensional tables for their analytics team to continue finding insights in what songs their users are listening to.
 
-![Diagram](Data_Werehouse.jpg)
+![Diagram](Data_Warehouse.jpg)
 
 ### Files from S3 Sparkify
 
@@ -30,24 +30,26 @@ DB_PORT= '5439'
 
 [IAM_ROLE]
 ARN=arn:aws:iam::xxxxxxxxxxx:role/Redshift_Role_Name
+
+[S3]
+LOG_DATA='s3://xxxxxxxxxx/log_data'
+LOG_JSONPATH='s3://xxxxxxxx/log_json_path.json'
+SONG_DATA='s3://xxxxxxxxx/song_data'
 ```
 
-* sql_queries ► It defines the SQL statements, which will be imported into the two other files above to create, delete and load data into t.
-* 
+* sql_queries.py ► It defines the SQL statements, which will be imported into the two other files above to create, delete and load data into the tables.
+* create_table.py ► It executes the queries to create fact and dimension tables for the star schema in Redshift.
+* etl.py ► It executes the queries to load data from S3 into staging tables on Redshift and then process that data into the analytics tables on Redshift.
 
-## steps for AWS
+## How to run the scripts
 
+* Asfer creating the AWS Role with the <mark>permission needed (very important)</mark> and the AWS Redshift cluster *
 
+1.- To create all the tables 
 
+> $ python create_table.py $ 
 
+2.- To load the data into the tables from the Redshift schema
 
+> $ python etl.py $ 
 
-## OPTIONAL: Question for the reviewer
- 
-If you have any question about the starter code or your own implementation, please add it in the cell below. 
-
-For example, if you want to know why a piece of code is written the way it is, or its function, or alternative ways of implementing the same functionality, or if you want to get feedback on a specific part of your code or get feedback on things you tried but did not work.
-
-Please keep your questions succinct and clear to help the reviewer answer them satisfactorily. 
-
-> **_Your question_**
