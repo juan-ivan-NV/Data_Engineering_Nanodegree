@@ -8,20 +8,25 @@ def drop_tables(cur, conn):
     Funciton to execute the drop tables queries
     It receives cursor and connection variables
     """
+    print('\nDroping tables ...')
     
     for query in drop_table_queries:
-        print('Deleting table')
+        print('\nIf exists table "{}" is deleted'.format(query.split()[-1]))
         cur.execute(query)
         conn.commit()
-
+        
+    print('\n\t\tAll tables successfully deleted')
+    
 
 def create_tables(cur, conn):
     """
     Funciton to execute the create tables queries
     It receives cursor and connection variables
     """
+    print('\n\nCreating tables ...')
+    
     for query in create_table_queries:
-        print("\nRunning" + query)
+        print("\nCreating table ► " + query.split()[5])
         cur.execute(query)
         conn.commit()
 
@@ -36,12 +41,12 @@ def main():
     conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
     cur = conn.cursor()
     
-    print('Cluster connection succesfull')
+    print('\nCluster connection succesfull')
 
     drop_tables(cur, conn)
     create_tables(cur, conn)
     
-    print('Tables created')
+    print('\n\n\t\tAll tables successfully created\n\n')
 
     conn.close()
 
