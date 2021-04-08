@@ -94,7 +94,7 @@ song_table_create = (""" CREATE TABLE IF NOT EXISTS songs (
 artist_table_create = (""" CREATE TABLE IF NOT EXISTS artists (
                                     artist_id              VARCHAR SORTKEY PRIMARY KEY,
                                     name                   VARCHAR NOT NULL,
-                                    location               VARCHAR NOT NULL,
+                                    location               VARCHAR,
                                     latitude               FLOAT,
                                     longitude              FLOAT
                                     )
@@ -140,7 +140,7 @@ songplay_table_insert = ("""
            se.userAgent       user_agent
     FROM staging_events se JOIN
     staging_songs ss ON (se.song = ss.title AND se.artist = ss.artist_name)
-    AND se.page == 'NextSong';                           
+    AND se.page = 'NextSong';                           
 """)
 
 user_table_insert = ("""
@@ -151,7 +151,7 @@ user_table_insert = ("""
            gender,
            level
     FROM staging_events
-    WHERE user_id IS NOT NULL AND page == 'NextSong';
+    WHERE user_id IS NOT NULL AND page = 'NextSong';
 """)
 
 song_table_insert = (""" 
@@ -166,13 +166,13 @@ song_table_insert = ("""
 """)
 
 artist_table_insert = ("""
-    INSERT INTO artists (artist_id, name, location, lattitude, longitude)
-    SELECT DISTINCT(artist_id) artist_id,
-           artist_name         name,
-           artist_location     location,
-           artist_latitude     latitude,
-           artist_longitude    longitude
-    FROM staging_songs 
+    INSERT INTO artists (artist_id, name, location, latitude, longitude)
+    SELECT  DISTINCT(artist_id)  artist_id,
+            artist_name          name,
+            artist_location      location,
+            artist_latitude      latitude,
+            artist_longitude     longitude
+    FROM staging_songs
     WHERE artist_id IS NOT NULL;
 """)
 
