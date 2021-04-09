@@ -101,7 +101,7 @@ artist_table_create = (""" CREATE TABLE IF NOT EXISTS artists (
 """)
 
 time_table_create = (""" CREATE TABLE IF NOT EXISTS time (
-                                    star_time              TIMESTAMP DISTKEY SORTKEY PRIMARY KEY,
+                                    start_time             TIMESTAMP NOT NULL DISTKEY SORTKEY PRIMARY KEY,
                                     hour                   INTEGER NOT NULL,
                                     day                    INTEGER NOT NULL,
                                     week                   INTEGER NOT NULL,
@@ -138,8 +138,8 @@ songplay_table_insert = ("""
            se.sessionId       session_id,
            se.location,
            se.userAgent       user_agent
-    FROM staging_events se JOIN
-    staging_songs ss ON (se.song = ss.title AND se.artist = ss.artist_name)
+    FROM staging_events se 
+    JOIN staging_songs ss ON (se.song = ss.title AND se.artist = ss.artist_name)
     AND se.page = 'NextSong';                           
 """)
 
@@ -151,7 +151,8 @@ user_table_insert = ("""
            gender,
            level
     FROM staging_events
-    WHERE user_id IS NOT NULL AND page = 'NextSong';
+    WHERE user_id IS NOT NULL 
+    AND page = 'NextSong';
 """)
 
 song_table_insert = (""" 
@@ -178,14 +179,15 @@ artist_table_insert = ("""
 
 time_table_insert = (""" 
     INSERT INTO time (start_time, hour, day, week, month, year, weekday)
-    SELECT  DISTINCT (start_time)                AS start_time,
-            EXTRACT (hour FROM start_time)       AS hour,
-            EXTRACT (day FROM start_time)        AS day,
-            EXTRACT (week FROM start_time)       AS week,
-            EXTRACT (month FROM start_time)      AS month,
-            EXTRACT (year FROM start_time)       AS year,
-            EXTRACT (dayofweek FROM start_time)  AS weekday
-    FROM songplays;
+    SELECT DISTINCT ts,
+                EXTRACT(hour from ts),
+                EXTRACT(day from ts),
+                EXTRACT(week from ts),
+                EXTRACT(month from ts),
+                EXTRACT(year from ts),
+                EXTRACT(weekday from ts)
+    FROM staging_events
+    WHERE ts IS NOT NULL;
 """)
 
 # ANALYTICS QUERIES
