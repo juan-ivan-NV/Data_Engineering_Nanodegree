@@ -13,7 +13,10 @@ def load_staging_tables(cur, conn):
     for query in copy_table_queries:
         print('\nInserting data into table ► ' + query.split()[1])
         cur.execute(query)
+        cur.execute("SELECT COUNT(*) FROM {}".format(query.split()[1]))
+        print("Number of rows inserted: ", cur.fetchone()[0])
         conn.commit()
+
 
 
 def insert_tables(cur, conn):
@@ -26,6 +29,8 @@ def insert_tables(cur, conn):
     for query in insert_table_queries:
         print('\nInserting data into table ► ' + query.split()[2])
         cur.execute(query)
+        cur.execute("SELECT COUNT(*) FROM {}".format(query.split()[2]))
+        print("Number of rows inserted: ", cur.fetchone()[0])
         conn.commit()
 
 

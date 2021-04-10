@@ -21,6 +21,8 @@ Both datasets are used to load the information in the Staging Tables.
 * staging_events
 * staging_songs
 
+Then the staging tables are used to load the data to the schema tables.
+
 ## Project Files
 
 * dwh.cfg ► Contains the AWS credentials and directions.
@@ -58,7 +60,6 @@ After creating the AWS Role with the <mark>permission needed (very important)</m
 
 > python etl.py 
 
-# Queries
 
 
 
