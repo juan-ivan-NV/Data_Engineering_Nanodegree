@@ -15,6 +15,10 @@ Learn to create relational and NoSQL data models to fit the diverse needs of dat
 
 * Project: Data Warehouse
 
+Project to create an AWS Redshift DB and load data from AWS S3 through an ETL process.
+
+![Diagram](7_Project_3_Data_Warehouse/Data_Warehouse.jpg)
+
 ### 4 Data Lakes with Spark
 
 * Project: Data Lake
