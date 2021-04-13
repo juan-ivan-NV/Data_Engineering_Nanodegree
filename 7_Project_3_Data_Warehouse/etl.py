@@ -5,7 +5,11 @@ from sql_queries import copy_table_queries, insert_table_queries
 
 def load_staging_tables(cur, conn):
     """
-    Function to insert data into staging tables
+    Function to insert data into staging tables and also displays the number of rows inserted in each table
+    
+    inputs:
+    cur ► cursor to execute instructions
+    conn ► the connection to the cluster
     """
     
     print('\n\t\tInserting data into staging tables ...')
@@ -21,7 +25,11 @@ def load_staging_tables(cur, conn):
 
 def insert_tables(cur, conn):
     """
-    Function to insert data into the tables
+    Function to insert data into the schema tables and also displays the number of rows inserted in each table
+    
+    inputs:
+    cur ► cursor to execute instructions
+    conn ► the connection to the cluster
     """
     
     print('\n\n\t\tInserting data into schema tables ...')
@@ -36,7 +44,8 @@ def insert_tables(cur, conn):
 
 def main():
     """
-    Main function to insert data into all tables
+    Main function to call the other functions and insert data into all tables
+    It takes all the credentials and makes the connection to the cluster
     """
     config = configparser.ConfigParser()
     config.read('dwh.cfg')
