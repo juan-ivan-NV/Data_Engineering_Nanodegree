@@ -21,6 +21,8 @@ Project to create an AWS Redshift DB and load data from AWS S3 through an ETL pr
 
 ### 4 Data Lakes with Spark
 
+This module is focused on Spark with python, for syntax, take data from a DB and also connect to AWS.
+
 * Project: Data Lake
 
 ### 5 Data Pipelines with Airflow
