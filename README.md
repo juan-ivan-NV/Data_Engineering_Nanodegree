@@ -29,6 +29,8 @@ Data wharehouse: A structured DB (ETL).
 
 * Project: Data Lake
 
+![Diagram](Images/Data_Lakes.jpg)
+
 ### 5 Data Pipelines with Airflow
 
 * Project: Data Pipelines

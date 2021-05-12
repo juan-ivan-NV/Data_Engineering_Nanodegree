@@ -8,6 +8,8 @@ A music streaming startup, Sparkify, has grown their user base and song database
 
 You will need to perform an ETL process to load data from S3, process the data into analytics tables using Spark, and load them back into S3. You'll deploy this Spark process on a cluster using AWS.
 
+![Image](../Images/Data_Lakes.jpg)
+
 ## Datasets
 
 * Song data: s3://udacity-dend/song_data
