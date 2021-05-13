@@ -44,7 +44,6 @@ Files that contain information like:
  3.- Create an S3 Bucket named <code>sparkify-dend</code>.
 
  4.- Fill the requiered credentials and data in the document dl.cfg. 
-
 <code>
 KEY=YOUR_AWS_ACCESS_KEY
 SECRET=YOUR_AWS_SECRET_KEY
