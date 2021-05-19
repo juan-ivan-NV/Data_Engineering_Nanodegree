@@ -56,9 +56,13 @@ After creating the AWS Role with the <mark>permission needed (very important)</m
 
 > python create_table.py 
 
+![Diagram](scrp1.png)
+
 2.- To load the data into the tables from the Redshift schema
 
 > python etl.py 
+
+![Diagram](scrp2.png)
 
 
 
