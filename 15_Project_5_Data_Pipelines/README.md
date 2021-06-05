@@ -12,4 +12,42 @@ The source data resides in S3 and needs to be processed in Sparkify's data wareh
 * To fill the data warehouse.
 * To run checks on the data.
 
-All SQL transformations are provided but should be 
+All SQL transformations are provided but should be executed with custom operators.
+
+![Image](../Images/example-dag.png)
+
+## Airflow enviroment
+
+This project will be executer in the Udacity enviroment for Airflow
+
+Following connections shoul be created:
+
+* connection: aws_credentials ► Iam user credentials.
+* connection: redshift ► Data from the cluster.
+
+To turn on the Airflow enviroment <code>/opt/airflow/start.sh</code>
+
+## Datasets
+
+* Log data:<code>s3://udacity-dend/log_data</code>
+* Log data:<code>s3://udacity-dend/song_data</code>
+
+# Challenges
+
+### Configuring the DAG
+
+In the DAG, add <code>default parameters</code> according to these guidelines
+
+* The DAG does not have dependencies on past runs
+* On failure, the task are retried 3 times
+* Retries happen every 5 minutes
+* Catchup is turned off
+* Do not email on retry
+
+## Building the operators
+
+### Stage operator
+
+### Fact and Dimension Operators
+
+### Data Quality Operator
