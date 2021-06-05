@@ -65,17 +65,31 @@ The main functionality is to receive one or more SQL based test cases along with
 ## Directory overview
 
 dags ► dir
+
     * full_dag.py
+
 plugins ► dir
+
     * helpers ► dir
+
         * __init__.py
+
         * sql_queries.py
+
     * operator ► dir
+
         * __init__.py
+
         * data_quality.py
+
         * load_dimension.py
+
         * load_fact.py
+
         * stage_redshift.py
+
     * __init__.py
+
 create_tables.sql 
+
 README.md
