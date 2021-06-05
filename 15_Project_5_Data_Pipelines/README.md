@@ -48,6 +48,34 @@ In the DAG, add <code>default parameters</code> according to these guidelines
 
 ### Stage operator
 
+It should be able to load any JSON formatted files from S3 to AWS Redshift.
+The operator cretes and runs a SQL COPY statement based on the parameters provided.
+
+The parameters should be used to distinguish between JSON file.
+
 ### Fact and Dimension Operators
 
+Most of the logic is within the SQL transformations and the operator is expected to take as input a SQL statement and target database on wich to run the query against.
+
 ### Data Quality Operator
+
+This operator us implemented finally and is used to run checks on the data itself.
+The main functionality is to receive one or more SQL based test cases along with the expected results and execute the tests.
+
+## Directory overview
+
+dags ► dir
+    * full_dag.py
+plugins ► dir
+    * helpers ► dir
+        * __init__.py
+        * sql_queries.py
+    * operator ► dir
+        * __init__.py
+        * data_quality.py
+        * load_dimension.py
+        * load_fact.py
+        * stage_redshift.py
+    * __init__.py
+create_tables.sql 
+README.md
