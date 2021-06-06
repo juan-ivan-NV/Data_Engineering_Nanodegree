@@ -76,7 +76,7 @@ plugins ► dir
 
         * sql_queries.py
 
-    * operator ► dir
+    * operators ► dir
 
         * __init__.py
 
