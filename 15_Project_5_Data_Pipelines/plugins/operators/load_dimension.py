@@ -3,7 +3,11 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadDimensionOperator(BaseOperator):
-
+    
+    """ 
+    Class for the LoadDimensionOperator in order load the data to the dimension tables 
+    """
+    
     ui_color = '#80BD9E'
 
     truncate_stmt = """TRUNCATE TABLE {table}"""

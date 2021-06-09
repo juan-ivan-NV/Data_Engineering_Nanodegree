@@ -4,8 +4,9 @@ from airflow.utils.decorators import apply_defaults
 
 class DataQualityOperator(BaseOperator):
     
-    """ Class for the DataQualityOperator in order to se 
-    if we have populated the tables """
+    """ 
+    Class for the DataQualityOperator in order to se if we have populated the tables 
+    """
     
     ui_color = '#89DA59'
 
@@ -37,5 +38,4 @@ class DataQualityOperator(BaseOperator):
             if num_records < 1:
                 raise ValueError(f"Data quality check failed. {table} contained 0 rows")
             
-            self.log.info(f"Data quality on table {table} check passed with {records[0][0]} records")
-            
+            self.log.info(f"Data quality on table {table} check passed with {records[0][0]} records") 
