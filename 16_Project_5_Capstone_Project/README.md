@@ -1,53 +1,20 @@
 # Data engineering capstone project
 
-Overview 
+Data:
 
-I this project 4 datasets will be used. The main dataset will include data on immigration to the United States, and supplementary datasets will include data on airport codes, U.S. city demographics, and temperature data. You're also welcome to enrich the project with additional data if you'd like to set your project apart.
+* <a href= "https://public.opendatasoft.com/explore/dataset/us-cities-demographics/export/">US-cities-demographics.csv</a> / Demograpjic data for cities
 
-## Steps
+Columns ► city - state - media_age - male_population - female_population - total_population - num_veterans - foreign_born - average_household_size - state_code - race - count
 
-1.- Scope the project and Gather Data
+* <a href= "https://www.trade.gov/national-travel-and-tourism-office">immigration_data_sample.csv</a> / l94 imigration data
 
-* Chosing the data two sources and one million rows.
+Columns ► cicid - year - month - cit - res - iata - arrdate - mode - addr - depdate - bir - visa - coun- dtadfil - visapost - occup - entdepa - entdepd - entdepu - matflag - biryear - dtaddto - gender - insnum - airline - admnum - fltno - visatype
 
-* Explainig end use cases
+* <a href= "https://datahub.io/core/airport-codes#data">airport-codes_csv.csv</a> / information related to airports
 
-2.- Explore and Assess the Data
+Columns ► ident - type - name - elevation_ft - continent - iso_country - iso_region - municipality - gps_code - iata_code - local_code - coordinates
 
-* Data quality (dealing with, missing values, dupicate data, etc.)
+* <a href= "https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data">GlobalLandTemperaturesByCity.csv</a> / Kaggle source (This study combines 1.6 billion temperature reports from 16 pre-existing archives)
 
-* Document the data quality steps.
+Columns ► dt - AverageTemperature - AverageTemperatureUncertainity - City - Country - Latitude - Longitude.
 
-3.- Define the Data Model
-
-* Explaining the data model.
-
-* List the steps necessary to pipeline the data into the chosen data model.
-
-4.- Run ETL to Model the Data.
-
-* Creating data pipelines and model.
-
-* Including a data dictionary.
-
-* Running data quality checks to ensure the pipeline ran as expected.
-
-5.- Complete Ptoject Write Up.
-
-* What's the goal? What queries will you want to run? How would Spark or Airflow be incorporated? Why did you choose the model you chose?
-
-* Clearly state the rationale for the choice of tools and technologies for the project.
-
-* Document the steps of the process.
-
-* Propose how often the data should be updated and why.
-
-* Post your write-up and final data model in a GitHub repo.
-
-* Include a description of how you would approach the problem differently under the following scenarios:
-
-    * If the data was increased by 100x.
-
-    * If the pipelines were run on a daily basis by 7am.
-
-    * If the database needed to be accessed by 100+ people.
