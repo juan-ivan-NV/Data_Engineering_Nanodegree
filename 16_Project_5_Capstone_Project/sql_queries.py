@@ -65,13 +65,17 @@ create_immigrations = """CREATE TABLE IF NOT EXISTS immigrations(
 );"""
 
 create_temperatures = """CREATE TABLE IF NOT EXISTS temperatures(
-                        timestamp                      DATE,
-                        average_temperature            FLOAT,
+                        timestamp                       DATE,
+                        average_temperature             FLOAT,
                         average_temperature_uncertainty FLOAT,
-                        city                           VARCHAR,
-                        country                        VARCHAR,
-                        latitude                       VARCHAR,
-                        longitude                      VARCHAR
+                        city                            VARCHAR,
+                        country                         VARCHAR,
+                        latitude                        VARCHAR,
+                        longitude                       VARCHAR
 );"""
 
 # Insert data
+
+drop_table_queries = [drop_airports, drop_demographics, drop_immigrations, drop_temperatures]
+create_table_queries = [create_airports, create_demographics, create_immigrations, create_temperatures]
+
