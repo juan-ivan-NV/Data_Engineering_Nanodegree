@@ -18,6 +18,37 @@
 
 <pre>Columns ► dt | AverageTemperature | AverageTemperatureUncertainity | City | Country | Latitude | Longitude</pre>
 
+## Directory overview
+
+* capstone_project_notebook.ipynb
+
+* sql_queries.py
+
+* README.py
+
+► plugins
+
+    * __inint__.py
+
+    ► helpers
+
+        * __init__.py
+
+        * table_configs.py
+
+    ► operators
+
+        * __inint__.py
+
+        * copy_redshift.py
+
+        * data_quality.py
+
+        * sas_value_redshift.py
+
+► dags
+
+    * etl_dag.py
 
 ## Data exploration.
 
