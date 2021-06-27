@@ -7,8 +7,7 @@ from airflow.operators.dummy_operator import DummyOperator
                                 LoadDimensionOperator, DataQualityOperator)
 """
 
-from airflow.operators import (StageToRedshiftOperator, LoadFactOperator,
-                                LoadDimensionOperator, DataQualityOperator)
+from airflow.operators import (CopyToRedshiftOperator, SASValueToRedshiftOperator, DataQualityOperator)
 
 
 default_args = {
@@ -29,23 +28,81 @@ dag = DAG('etl_dag.py',
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
 
-stage_events_to_redshift = StageToRedshiftOperator(
-    task_id='Stage_events',
+""" ////////// 1 ► Operators and parameters to load data //////////"""
+
+sas_source_code_to_redshift = SASValueToRedshiftOperator(
+    task_id='copy_immigrations_table',
     dag=dag,
-    table = 'staging_events',
+    table = 'immigrations',
     redshift_conn_id = 'redshift',
     aws_credentials_id = 'aws_credentials',
-    s3_bucket = 'udacity-dend',
-    s3_key = 'log_data',
-    json_path = 's3://udacity-dend/log_json_path.json'
+    path = './sas_data'
 )
 
-stage_songs_to_redshift = StageToRedshiftOperator(
-    task_id='Stage_songs',
+airports_data_to_redshift = CopyToRedshiftOperator(
+    task_id='copy_airports_table',
     dag=dag,
-    table = 'staging_songs',
+    table = 'airports',
     redshift_conn_id = 'redshift',
     aws_credentials_id = 'aws_credentials',
-    s3_bucket = 'udacity-dend',
-    s3_key = 'song_data'    
+    path = 'airport-codes_csv.csv'
 )
+
+demographics_data_to_redshift = CopyToRedshiftOperator(
+    task_id='copy_demographics_table',
+    dag=dag,
+    table = 'demographics',
+    redshift_conn_id = 'redshift',
+    aws_credentials_id = 'aws_credentials',
+    path = 'us-cities-demographics.csv'
+)
+
+temperatures_data_to_redshift = CopyToRedshiftOperator(
+    task_id='copy_temperatures_table',
+    dag=dag,
+    table = 'temperatures',
+    redshift_conn_id = 'redshift',
+    aws_credentials_id = 'aws_credentials',
+    path = '../../data2/GlobalLandTemperaturesByCity.csv'
+)
+
+
+""" ////////// 2 ► Operators and parameters to check data ////////// """
+
+run_quality_checks = DataQualityOperator(
+    task_id='Run_data_quality_checks',
+    dag=dag,
+    redshift_conn_id = 'redshift',
+    tables = [
+        "immigrations",
+        "airports",
+        "demographics",
+        "temperatures"
+        ],
+)
+
+
+""" ////////// 3 ► Operator to finish the dag ////////// """
+
+end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
+
+
+""" Starting and loading the tables from the local files """
+
+start_operator >> sas_source_code_to_redshift
+start_operator >> airports_data_to_redshift
+start_operator >> demographics_data_to_redshift
+start_operator >> temperatures_data_to_redshift
+
+
+""" Data quality stage """
+
+sas_source_code_to_redshift   >> run_quality_checks
+airports_data_to_redshift     >> run_quality_checks
+demographics_data_to_redshift >> run_quality_checks
+temperatures_data_to_redshift >> run_quality_checks
+
+
+""" End of the DAG execution """
+
+run_quality_checks >> end_operator
