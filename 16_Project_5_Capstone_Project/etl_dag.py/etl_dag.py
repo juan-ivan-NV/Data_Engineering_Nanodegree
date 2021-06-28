@@ -29,41 +29,48 @@ start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
 
 """ ////////// 1 ► Operators and parameters to load data //////////"""
-
+#     path = './sas_data'
 sas_source_code_to_redshift = SASValueToRedshiftOperator(
     task_id='copy_immigrations_table',
     dag=dag,
     table = 'immigrations',
+    s3_bucket = 'xxxx',
+    s3_key = 'xxxx',
     redshift_conn_id = 'redshift',
-    aws_credentials_id = 'aws_credentials',
-    path = './sas_data'
+    aws_credentials_id = 'aws_credentials'
 )
 
+#     path = 'airport-codes_csv.csv'
 airports_data_to_redshift = CopyToRedshiftOperator(
     task_id='copy_airports_table',
     dag=dag,
     table = 'airports',
+    s3_bucket = 'xxxx',
+    s3_key = 'xxxx',
     redshift_conn_id = 'redshift',
-    aws_credentials_id = 'aws_credentials',
-    path = 'airport-codes_csv.csv'
+    aws_credentials_id = 'aws_credentials'
 )
 
+#    path = 'us-cities-demographics.csv'
 demographics_data_to_redshift = CopyToRedshiftOperator(
     task_id='copy_demographics_table',
     dag=dag,
     table = 'demographics',
+    s3_bucket = 'xxxx',
+    s3_key = 'xxxx',
     redshift_conn_id = 'redshift',
-    aws_credentials_id = 'aws_credentials',
-    path = 'us-cities-demographics.csv'
+    aws_credentials_id = 'aws_credentials'
 )
 
+#    path = '../../data2/GlobalLandTemperaturesByCity.csv'
 temperatures_data_to_redshift = CopyToRedshiftOperator(
     task_id='copy_temperatures_table',
     dag=dag,
     table = 'temperatures',
+    s3_bucket = 'xxxx',
+    s3_key = 'xxxx',
     redshift_conn_id = 'redshift',
-    aws_credentials_id = 'aws_credentials',
-    path = '../../data2/GlobalLandTemperaturesByCity.csv'
+    aws_credentials_id = 'aws_credentials'
 )
 
 

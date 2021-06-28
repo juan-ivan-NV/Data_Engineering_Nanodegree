@@ -52,7 +52,9 @@
 
 ## Data exploration.
 
+This stage is to use PySpark and look for the data frame informations, such as nulls, data frame dimentions, and types of data.
 
+After taking a look a the data frames it comes the desition to keep usefull columns and get rid of useless columns
 
 ## Data selection and cleaning.
 
