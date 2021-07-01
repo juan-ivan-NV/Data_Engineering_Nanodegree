@@ -7,7 +7,8 @@ from airflow.operators.dummy_operator import DummyOperator
                                 LoadDimensionOperator, DataQualityOperator)
 """
 
-from airflow.operators import (CopyToRedshiftOperator, SASValueToRedshiftOperator, DataQualityOperator)
+# SASValueToRedshiftOperator
+from airflow.operators import (CopyToRedshiftOperator, DataQualityOperator)
 
 
 default_args = {
@@ -30,13 +31,13 @@ start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
 """ ////////// 1 ► Operators and parameters to load data //////////"""
 #     path = './sas_data'
-sas_source_code_to_redshift = SASValueToRedshiftOperator(
+sas_source_code_to_redshift = CopyToRedshiftOperator(
+    redshift_conn_id = 'redshift',
     task_id='copy_immigrations_table',
     dag=dag,
     table = 'immigrations',
-    s3_bucket = 'xxxx',
-    s3_key = 'xxxx',
-    redshift_conn_id = 'redshift',
+    s3_bucket = 'capstoneprojectde',
+    s3_key = 'S3_data/immigrations_data.csv',
     aws_credentials_id = 'aws_credentials'
 )
 
@@ -45,8 +46,8 @@ airports_data_to_redshift = CopyToRedshiftOperator(
     task_id='copy_airports_table',
     dag=dag,
     table = 'airports',
-    s3_bucket = 'xxxx',
-    s3_key = 'xxxx',
+    s3_bucket = 'capstoneprojectde',
+    s3_key = 'S3_data/airports_data.csv',
     redshift_conn_id = 'redshift',
     aws_credentials_id = 'aws_credentials'
 )
@@ -56,8 +57,8 @@ demographics_data_to_redshift = CopyToRedshiftOperator(
     task_id='copy_demographics_table',
     dag=dag,
     table = 'demographics',
-    s3_bucket = 'xxxx',
-    s3_key = 'xxxx',
+    s3_bucket = 'capstoneprojectde',
+    s3_key = 'S3_data/demographics_data.csv',
     redshift_conn_id = 'redshift',
     aws_credentials_id = 'aws_credentials'
 )
@@ -67,8 +68,8 @@ temperatures_data_to_redshift = CopyToRedshiftOperator(
     task_id='copy_temperatures_table',
     dag=dag,
     table = 'temperatures',
-    s3_bucket = 'xxxx',
-    s3_key = 'xxxx',
+    s3_bucket = 'capstoneprojectde',
+    s3_key = 'S3_data/Temperature_data.csv',
     redshift_conn_id = 'redshift',
     aws_credentials_id = 'aws_credentials'
 )
