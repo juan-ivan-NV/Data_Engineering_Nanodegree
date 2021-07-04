@@ -1,3 +1,19 @@
+import configparser
+
+
+# CONFIG
+config = configparser.ConfigParser()
+config.read('dwh.cfg')
+
+# VARIABLES FROM dwh.cgf
+
+IMMIGRATIONS = config.get("S3","IMMIGRATIONS")
+AIRPORTS = config.get("S3", "AIRPORTS")
+DEMOGRAPHICS = config.get("S3", "DEMOGRAPHICS")
+TEMPERATURES = config.get("S3", "TEMPERATURES")
+
+IAM_ROLE = config.get("IAM_ROLE","ARN")
+
 # Drop tables
 
 drop_airports = "DROP TABLE IF EXISTS airports;"
@@ -44,7 +60,8 @@ create_airports = """CREATE TABLE IF NOT EXISTS airports(
                         );"""
 
 create_demographics = """CREATE TABLE IF NOT EXISTS demographics(
-                        city                    VARCAHR,
+                        dem_idx                 INT,
+                        city                    VARCHAR,
                         state                   VARCHAR,
                         median_age              FLOAT,
                         male_population         INT,
@@ -54,12 +71,13 @@ create_demographics = """CREATE TABLE IF NOT EXISTS demographics(
                         foreign_born            INT,
                         average_household_size  FLOAT,
                         state_code              CHAR(2),
-                        Race                    VARCHAR,
-                        Count                   INT
+                        race                    VARCHAR,
+                        count                   INT
 );"""
 
 create_temperatures = """CREATE TABLE IF NOT EXISTS temperatures(
-                        dt                             DATE,
+                        temp_idx                       INT,
+                        dt                             VARCHAR,
                         AverageTemperature             FLOAT,
                         AverageTemperatureUncertainty  FLOAT,
                         City                           VARCHAR,
@@ -68,4 +86,46 @@ create_temperatures = """CREATE TABLE IF NOT EXISTS temperatures(
                         Longitude                      VARCHAR
 );"""
 
+# Copy to staging tables
+
+immigrations_copy = (""" 
+                copy immigrations from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2'
+                CSV
+                IGNOREHEADER 1;
+""").format(IMMIGRATIONS, IAM_ROLE)
+
+airports_copy = (""" 
+                copy airports from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2'
+                IGNOREHEADER 1
+                DELIMITER ','
+                CSV;
+""").format(AIRPORTS, IAM_ROLE)
+
+demographics_copy = (""" 
+                copy demographics from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2'
+                CSV
+                IGNOREHEADER 1
+                DELIMITER ',';
+""").format(DEMOGRAPHICS, IAM_ROLE)
+
+temperatures_copy = (""" 
+                copy temperatures from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2'
+                DELIMITER ','
+                CSV
+                IGNOREHEADER 1;
+""").format(TEMPERATURES, IAM_ROLE)
+
 # Insert data
+
+drop_table_queries = [drop_immigrations, drop_airports, drop_demographics, drop_temperatures]
+create_table_queries = [create_immigrations, create_airports, create_demographics, create_temperatures]
+#copy_table_queries = [immigrations_copy, airports_copy, demographics_copy, temperatures_copy]
+copy_table_queries = [demographics_copy]
