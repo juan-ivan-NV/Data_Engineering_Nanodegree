@@ -22,8 +22,9 @@ drop_immigrations = "DROP TABLE IF EXISTS immigrations;"
 drop_temperatures = "DROP TABLE IF EXISTS temperatures;"
 
 # Create tables
-
+                         
 create_immigrations = """CREATE TABLE IF NOT EXISTS immigrations(
+                        imm_idx                 INT,
                         cicid                   FLOAT PRIMARY KEY,
                         i94yr                   FLOAT,
                         i94mon                  FLOAT,
@@ -49,6 +50,7 @@ create_immigrations = """CREATE TABLE IF NOT EXISTS immigrations(
 
 
 create_airports = """CREATE TABLE IF NOT EXISTS airports(
+                        air_idx                 INT,
                         ident                   VARCHAR,
                         type                    VARCHAR,
                         name                    VARCHAR,
@@ -93,16 +95,17 @@ immigrations_copy = ("""
                 credentials 'aws_iam_role={}'
                 region 'us-west-2'
                 CSV
-                IGNOREHEADER 1;
+                IGNOREHEADER 1
+                DELIMITER ',';
 """).format(IMMIGRATIONS, IAM_ROLE)
 
 airports_copy = (""" 
                 copy airports from {}
                 credentials 'aws_iam_role={}'
                 region 'us-west-2'
+                CSV
                 IGNOREHEADER 1
-                DELIMITER ','
-                CSV;
+                DELIMITER ',';
 """).format(AIRPORTS, IAM_ROLE)
 
 demographics_copy = (""" 
@@ -118,14 +121,13 @@ temperatures_copy = ("""
                 copy temperatures from {}
                 credentials 'aws_iam_role={}'
                 region 'us-west-2'
-                DELIMITER ','
                 CSV
-                IGNOREHEADER 1;
+                IGNOREHEADER 1
+                DELIMITER ',';
 """).format(TEMPERATURES, IAM_ROLE)
 
 # Insert data
 
 drop_table_queries = [drop_immigrations, drop_airports, drop_demographics, drop_temperatures]
 create_table_queries = [create_immigrations, create_airports, create_demographics, create_temperatures]
-#copy_table_queries = [immigrations_copy, airports_copy, demographics_copy, temperatures_copy]
-copy_table_queries = [demographics_copy]
+copy_table_queries = [immigrations_copy, airports_copy, demographics_copy, temperatures_copy]
