@@ -78,7 +78,7 @@ An overview of the whole process.
 
 ## Consuming data (some analitics queries).
 
-![Image_7](Images/copy_csv.PNG)
+![Image_8](Images/copy_csv.PNG)
 
 
 ## Issues solved
@@ -109,7 +109,7 @@ For this project spark is used to work with dataframes because is faster than pa
 
 Working with airflow the DAG would be something like this...
 
-![Image_8](Images/copy_csv.PNG)
+![Image_9](Images/copy_csv.png)
 
 * Clearly state the rationale for the choice of tools and technologies for the project.
 
