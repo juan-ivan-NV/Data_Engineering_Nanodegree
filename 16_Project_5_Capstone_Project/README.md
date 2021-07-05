@@ -76,11 +76,6 @@ An overview of the whole process.
 
 ![Image_6](Images/over.PNG)
 
-## Consuming data (some analitics queries).
-
-![Image_8](Images/copy_csv.PNG)
-
-
 ## Issues solved
 
 Due to: 
