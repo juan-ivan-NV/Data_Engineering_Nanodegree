@@ -38,32 +38,34 @@ After taking a look a the data frames it comes the desition to keep usefull colu
 
 For the 4 files only the columns with data that I considered useless were removed and also columns with the most of the null or missing values, the whole process is on the <pre>capstone_project_notebook.ipynb</pre> using PySpark to manipulate dataframes, then the data were saved as CSV files and uploaded to and AWS S3 bucket.
 
-![Image](Images/s3.png)
+![Image_1](Images/s3.PNG)
 
 ## Database creation to redshift.
 
 After the DB creation with the command <pre>python create_tables.py</pre>
 
-![Image](Images/create_tables.png)
+![Image_2](Images/create_tables.PNG)
 
 The DB is populated with the files from S3 (using the COPY command) / 
 <pre>python etl.py</pre>
 
-![Image](Images/copy_csv.png)
+![Image_3](Images/copy_csv.PNG)
 
 ## Query in the Redshift DB.
 
-![Image](Images/q_airp.png)
+![Image_4](Images/q_airp.PNG)
 
-![Image](Images/t_airp.png)
+![Image_5](Images/t_airp.PNG)
 
 ### Schema.
 
 An overview of the complete process
 
+![Image_6](Images/over.PNG)
+
 ## Consuming data (some analitics queries).
 
-![Image](Images/copy_csv.png)
+![Image_7](Images/copy_csv.PNG)
 
 
 ## Issues solved
@@ -92,23 +94,35 @@ Actually spark is used to work with the data frames because is faster than panda
 
 Working with airflow the DAg would be something like this...
 
-![Image](Images/airflow.png)
+![Image_7](Images/airflow.PNG)
 
 * Clearly state the rationale for the choice of tools and technologies for the project.
 
+PySpark
+AWS_S3
+AWS_Redshift
+
 * Propose how often the data should be updated and why.
+
+Depending on the ammount of data that is recorded in one day or the data latency requiered by the company, but for this type of data the records could be updated daily or weekly in order to keep the ñas updates in the ammount of immigranst or demographics data.
 
 * Post your write-up and final data model in a GitHub repo.
 
-URL 
+<a href= "https://github.com/juan-ivan-NV/Data_Engineering_Nanodegree/tree/main/16_Project_5_Capstone_Project">Github project</a> 
 
-*Include a description of how you would approach the problem differently under the following scenarios:
+* Include a description of how you would approach the problem differently under the following scenarios:
 
     * If the data was increased by 100x.
     
+    For that reason the data is stored in Redshift warehouse, so the data can keep wrowing and also the cluster capacity.
+
     * If the pipelines were run on a daily basis by 7am.
+
+    For that reason Airflow implementation could be a good choice to set the data pipeline execution hourly or daily. 
     
     * If the database needed to be accessed by 100+ people.
+
+    While storing the DB in Redshift or another warehouse we can grant those access and set the cluster for that ammount of requests.
 
 
 
