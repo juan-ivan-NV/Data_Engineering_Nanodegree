@@ -104,7 +104,7 @@ For this project spark is used to work with dataframes because is faster than pa
 
 Working with airflow the DAG would be something like this...
 
-![Image_9](Images/copy_csv.png)
+![Image_9](Images/airflow.PNG)
 
 * Clearly state the rationale for the choice of tools and technologies for the project.
 
