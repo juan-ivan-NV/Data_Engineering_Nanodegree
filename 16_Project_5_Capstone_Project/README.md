@@ -53,18 +53,24 @@ For the 4 files, only the columns containing data that I considered useless were
 
 ![Image_1](Images/s3.PNG)
 
-## Database creation to redshift.
+## Execution of the project.
 
-After the DB creation with the command <pre>python create_tables.py</pre>
+DB creation (Tables) with the command <pre>python create_tables.py</pre>
 
 ![Image_2](Images/create_tables.PNG)
 
-The DB is populated with the files from S3 (using the COPY command) / 
+Data us dumped into the tables from S3 files (using the COPY command) / 
 <pre>python etl.py</pre>
 
 ![Image_3](Images/copy_csv.png)
 
-## Query in the Redshift DB.
+Run the data quality checkers to show if we have data recorded and display the first 5 rows.
+
+<pre>python data_quality.py</pre>
+
+![Image_3.5](Images/data_q.PNG)
+
+## Query on the Redshift DB interface.
 
 ![Image_4](Images/q_airp.PNG)
 

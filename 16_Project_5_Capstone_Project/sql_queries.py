@@ -131,3 +131,4 @@ temperatures_copy = ("""
 drop_table_queries = [drop_immigrations, drop_airports, drop_demographics, drop_temperatures]
 create_table_queries = [create_immigrations, create_airports, create_demographics, create_temperatures]
 copy_table_queries = [immigrations_copy, airports_copy, demographics_copy, temperatures_copy]
+tables = ["immigrations", "airports", "demographics", "temperatures"]
