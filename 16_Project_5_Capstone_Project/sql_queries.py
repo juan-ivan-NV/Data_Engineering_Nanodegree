@@ -11,6 +11,9 @@ IMMIGRATIONS = config.get("S3","IMMIGRATIONS")
 AIRPORTS = config.get("S3", "AIRPORTS")
 DEMOGRAPHICS = config.get("S3", "DEMOGRAPHICS")
 TEMPERATURES = config.get("S3", "TEMPERATURES")
+I94_RESIDENCE = config.get("S3", "I94_RESIDENCE")
+I94_PORT_OF_ADMISSION = config.get("S3","I94_PORT_OF_ADMISSION")
+I94_USA_STATE_ARRIVAL = config.get("S3", "I94_USA_STATE_ARRIVAL")
 
 IAM_ROLE = config.get("IAM_ROLE","ARN")
 
@@ -20,6 +23,9 @@ drop_airports = "DROP TABLE IF EXISTS airports;"
 drop_demographics = "DROP TABLE IF EXISTS demographics;"
 drop_immigrations = "DROP TABLE IF EXISTS immigrations;"
 drop_temperatures = "DROP TABLE IF EXISTS temperatures;"
+drop_i94_residence = "DROP TABLE IF EXISTS i94_residence;"
+drop_i94_port_of_admission = "DROP TABLE IF EXISTS i94_port_of_admission;"
+drop_i94_usa_state_arrival = "DROP TABLE IF EXISTS i94_usa_state_arrival;"
 
 # Create tables
                          
@@ -48,19 +54,6 @@ create_immigrations = """CREATE TABLE IF NOT EXISTS immigrations(
                         visatype                VARCHAR
 );"""
 
-
-create_airports = """CREATE TABLE IF NOT EXISTS airports(
-                        air_idx                 INT,
-                        ident                   VARCHAR,
-                        type                    VARCHAR,
-                        name                    VARCHAR,
-                        elevation_ft            FLOAT,
-                        continent               VARCHAR,
-                        iso_region              VARCHAR,
-                        municipality            VARCHAR,
-                        coordinates             VARCHAR
-                        );"""
-
 create_demographics = """CREATE TABLE IF NOT EXISTS demographics(
                         dem_idx                 INT,
                         city                    VARCHAR,
@@ -88,6 +81,24 @@ create_temperatures = """CREATE TABLE IF NOT EXISTS temperatures(
                         Longitude                      VARCHAR
 );"""
 
+create_i94_residence = """CREATE TABLE IF NOT EXISTS i94_residence(
+                        res_idx                        INT,
+                        i94cit_res                     FLOAT,
+                        country                        VARCHAR
+);"""
+
+create_i94_port_of_admission = """CREATE TABLE IF NOT EXISTS i94_port_of_admission(
+                        por_idx                        INT,
+                        i94port                        CHAR(3),
+                        port                           VARCHAR
+);"""
+
+create_i94_usa_state_arrival = """CREATE TABLE IF NOT EXISTS i94_usa_state_arrival(
+                        arr_idx                        INT,
+                        i94addr                        VARCHAR,
+                        state                          VARCHAR
+);"""
+
 # Copy to staging tables
 
 immigrations_copy = (""" 
@@ -98,15 +109,6 @@ immigrations_copy = ("""
                 IGNOREHEADER 1
                 DELIMITER ',';
 """).format(IMMIGRATIONS, IAM_ROLE)
-
-airports_copy = (""" 
-                copy airports from {}
-                credentials 'aws_iam_role={}'
-                region 'us-west-2'
-                CSV
-                IGNOREHEADER 1
-                DELIMITER ',';
-""").format(AIRPORTS, IAM_ROLE)
 
 demographics_copy = (""" 
                 copy demographics from {}
@@ -126,9 +128,36 @@ temperatures_copy = ("""
                 DELIMITER ',';
 """).format(TEMPERATURES, IAM_ROLE)
 
+i94_residence_copy = (""" 
+                copy i94_residence from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2'
+                CSV
+                IGNOREHEADER 1
+                DELIMITER ',';
+""").format(I94_RESIDENCE, IAM_ROLE)
+
+i94_port_of_admission_copy = (""" 
+                copy i94_port_of_admission from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2'
+                CSV
+                IGNOREHEADER 1
+                DELIMITER ',';
+""").format(I94_PORT_OF_ADMISSION, IAM_ROLE)
+
+i94_usa_state_arrival_copy = (""" 
+                copy i94_usa_state_arrival from {}
+                credentials 'aws_iam_role={}'
+                region 'us-west-2'
+                CSV
+                IGNOREHEADER 1
+                DELIMITER ',';
+""").format(I94_USA_STATE_ARRIVAL, IAM_ROLE)
+
 # Insert data
 
-drop_table_queries = [drop_immigrations, drop_airports, drop_demographics, drop_temperatures]
-create_table_queries = [create_immigrations, create_airports, create_demographics, create_temperatures]
-copy_table_queries = [immigrations_copy, airports_copy, demographics_copy, temperatures_copy]
-tables = ["immigrations", "airports", "demographics", "temperatures"]
+drop_table_queries = [drop_immigrations, drop_demographics, drop_temperatures, drop_i94_residence, drop_i94_port_of_admission, drop_i94_usa_state_arrival]
+create_table_queries = [create_immigrations, create_demographics, create_temperatures, create_i94_residence, create_i94_port_of_admission, create_i94_usa_state_arrival]
+copy_table_queries = [immigrations_copy, demographics_copy, temperatures_copy, i94_residence_copy, i94_port_of_admission_copy, i94_usa_state_arrival_copy]
+tables = ["immigrations", "demographics", "temperatures", "i94_residence", "i94_port_of_admission", "i94_usa_state_arrival"]
