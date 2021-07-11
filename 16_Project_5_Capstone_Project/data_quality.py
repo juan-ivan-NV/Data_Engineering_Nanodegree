@@ -1,4 +1,5 @@
 from sql_queries import tables
+from sql_queries import tables_keys
 import pandas as pd
 import configparser
 import psycopg2
@@ -35,7 +36,7 @@ def records(cur, conn, tables):
         print(f"Data quality on table {table} check passed with {records[0][0]} records")
     
     
-def display(cur, conn, tables):
+def unique_keys(cur, conn, tables_keys):
     
     """
     Checker for the first 5 rows in each table
@@ -43,13 +44,20 @@ def display(cur, conn, tables):
     Args:
         cur (:obj:`psycopg2.extensions.cursor`) ► Cursor for connection
         conn (:obj:`psycopg2.extensions.connection`) ► database connection
-        tables ► list of the tables in the DB
+        tables_keys ► list of the tables and their keys in the DB
     """
     
-    for table in tables:
-
-        print(f"\n\n-------Checking first 5 rows from {table} table---------")
-        cur.execute(f"SELECT * FROM {table} LIMIT 5")
+    query_unique_key = ''
+    
+    for table, key in tables_keys:
+        
+        query_unique_key = ("""SELECT {}, COUNT({})
+                               FROM {}
+                               GROUP BY {}
+                               HAVING ( COUNT({}) > 1 ) """).format(key, key, table, key, key)
+        
+        print(f"\n\n-------Checking unique keys from {table} and {key}---------")
+        cur.execute(query_unique_key)
         print("\n",pd.DataFrame(cur.fetchall()))
         conn.commit()
     
@@ -68,7 +76,7 @@ def main():
     print('\nCluster connection succesfull')
 
     records(cur, conn, tables)
-    display(cur, conn, tables)
+    unique_keys(cur, conn, tables_keys)
     
     print('\n\n\t\tData quality checker executed\n\n')
 

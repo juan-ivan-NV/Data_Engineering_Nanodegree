@@ -161,3 +161,4 @@ drop_table_queries = [drop_immigrations, drop_demographics, drop_temperatures, d
 create_table_queries = [create_immigrations, create_demographics, create_temperatures, create_i94_residence, create_i94_port_of_admission, create_i94_usa_state_arrival]
 copy_table_queries = [immigrations_copy, demographics_copy, temperatures_copy, i94_residence_copy, i94_port_of_admission_copy, i94_usa_state_arrival_copy]
 tables = ["immigrations", "demographics", "temperatures", "i94_residence", "i94_port_of_admission", "i94_usa_state_arrival"]
+tables_keys = {"immigrations":"cicid", "demographics" : "city", "temperatures" : "dt", "i94_residence" : "i94cit_res", "i94_port_of_admission" : "i94port", "i94_usa_state_arrival" : "i94addr"}
