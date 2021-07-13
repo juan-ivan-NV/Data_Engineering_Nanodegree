@@ -129,8 +129,5 @@ def main():
     temp_sp_df = delete_nulls(temp_sp_df, ["AverageTemperature","AverageTemperatureUncertainty"])
     csv_s3(temp_sp_df, 'Temperature_data.csv', path)
     
-    # 
-    
-    # SAS tables
     
     
