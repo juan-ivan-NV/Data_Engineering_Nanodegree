@@ -24,15 +24,17 @@ pd.set_option('max_columns', None)
 # Function to drop columns
 def drop_cols(df, *columns_to_drop):
     df.printSchema()
-    df = df.drop(*columns_to_drop)
+    drop = columns_to_drop[0]
+    print("cols to drop ",drop)
+    df = df.drop(*drop)
     df.printSchema()
     
     return df
 
 
 # Function to drop rows with nulls
-def delete_nulls(df, *columsn_w_nulls):
-    return df.na.drop(subset=*columsn_w_nulls)
+def delete_nulls(df, *columns_w_nulls):
+    return df.na.drop(subset = columns_w_nulls)
 
     
 # SAS_values_tables
@@ -84,15 +86,15 @@ def csv_s3(df, file_name, s3_path):
     
     if df.count() > 1000000:
         csv_buffer = StringIO()
-        df.limit(1000000).toPandas().to_csv(csv_buffer)
+        df.limit(500000).toPandas().to_csv(csv_buffer)
         s3_resource = boto3.resource('s3')
-        s3_resource.Object(bucket, file_name).put(Body=csv_buffer.getvalue())
+        s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
     
     else:
         csv_buffer = StringIO()
         df.toPandas().to_csv(csv_buffer)
         s3_resource = boto3.resource('s3')
-        s3_resource.Object(bucket, file_name).put(Body=csv_buffer.getvalue())
+        s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
 
     print("{} successfully submitted to {}".format(file_name, s3_path))
 
@@ -101,7 +103,7 @@ def main():
     
     config = configparser.ConfigParser()
     config.read('dwh.cfg')
-    path = "s3://capstoneprojectde"
+    path = "capstoneprojectde"
     
     print("--------Working on immigrations file--------►")
     immigrations_df_spark = spark.read.load('./sas_data')
@@ -129,5 +131,6 @@ def main():
     temp_sp_df = delete_nulls(temp_sp_df, ["AverageTemperature","AverageTemperatureUncertainty"])
     csv_s3(temp_sp_df, 'Temperature_data.csv', path)
     
-    
+if __name__ == "__main__":
+    main()
     
