@@ -76,24 +76,30 @@ def sas_value_parser(value, columns):
             codes.append(code)
             values.append(val)
         
-            
-    return pd.DataFrame(list(zip(codes, values)), columns=columns)
+    df = pd.DataFrame(list(zip(codes, values)), columns=columns)
+    return spark.createDataFrame(df)
     
 
 # Function to upload csv files to S3
 
 def csv_s3(df, file_name, s3_path):
     
-    if df.count() > 1000000:
+    print(df.count())
+    
+    if df.count() > 500000:
         csv_buffer = StringIO()
         df.limit(500000).toPandas().to_csv(csv_buffer)
-        s3_resource = boto3.resource('s3')
+        s3_resource = boto3.resource('s3',
+         aws_access_key_id="xxxxx",
+         aws_secret_access_key= "xxxxx")
         s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
     
     else:
         csv_buffer = StringIO()
         df.toPandas().to_csv(csv_buffer)
-        s3_resource = boto3.resource('s3')
+        s3_resource = boto3.resource('s3',
+         aws_access_key_id="xxxx",
+         aws_secret_access_key= "xxxxx")
         s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
 
     print("{} successfully submitted to {}".format(file_name, s3_path))
@@ -105,10 +111,10 @@ def main():
     config.read('dwh.cfg')
     path = "capstoneprojectde"
     
-    print("--------Working on immigrations file--------►")
-    immigrations_df_spark = spark.read.load('./sas_data')
-    immigrations_df_spark = drop_cols(immigrations_df_spark, ['visapost', 'occup', 'entdepu', 'insnum', 'entdepa', 'entdepd', 'entdepd', 'count', 'adnum'])
-    csv_s3(immigrations_df_spark, 'immigrations_data.csv', path)
+    #print("--------Working on immigrations file--------►")
+    #immigrations_df_spark = spark.read.load('./sas_data')
+    #immigrations_df_spark = drop_cols(immigrations_df_spark, ['visapost', 'occup', 'entdepu', 'insnum', 'entdepa', 'entdepd', 'entdepd', 'count', 'adnum'])
+    #csv_s3(immigrations_df_spark, 'immigrations_data.csv', path)
     
     print("--------Working on i94_residence file--------►")
     i94_residence = sas_value_parser('i94cntyl', ['i94cit_res', 'country'])
