@@ -33,7 +33,7 @@ def drop_cols(df, *columns_to_drop):
 
 
 # Function to drop rows with nulls
-def delete_nulls(df, *columns_w_nulls):
+def delete_nulls(df, columns_w_nulls):
     return df.na.drop(subset = columns_w_nulls)
 
     
@@ -77,12 +77,13 @@ def sas_value_parser(value, columns):
             values.append(val)
         
     df = pd.DataFrame(list(zip(codes, values)), columns=columns)
+    df.head()
     return spark.createDataFrame(df)
     
 
 # Function to upload csv files to S3
 
-def csv_s3(df, file_name, s3_path):
+def csv_s3(key_id, secret_key, df, file_name, s3_path):
     
     print(df.count())
     
@@ -90,16 +91,16 @@ def csv_s3(df, file_name, s3_path):
         csv_buffer = StringIO()
         df.limit(500000).toPandas().to_csv(csv_buffer)
         s3_resource = boto3.resource('s3',
-         aws_access_key_id="xxxxx",
-         aws_secret_access_key= "xxxxx")
+         aws_access_key_id=key_id,
+         aws_secret_access_key= secret_key)
         s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
     
     else:
         csv_buffer = StringIO()
         df.toPandas().to_csv(csv_buffer)
         s3_resource = boto3.resource('s3',
-         aws_access_key_id="xxxx",
-         aws_secret_access_key= "xxxxx")
+         aws_access_key_id=key_id,
+         aws_secret_access_key= secret_key)
         s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
 
     print("{} successfully submitted to {}".format(file_name, s3_path))
@@ -110,32 +111,34 @@ def main():
     config = configparser.ConfigParser()
     config.read('dwh.cfg')
     path = "capstoneprojectde"
+    key_id = config.get("CREDENTIALS", "AWS_ACCESS_KEY_ID")
+    secret_key = config.get("CREDENTIALS", "AWS_SECRET_ACCESS_KEY")
     
-    #print("--------Working on immigrations file--------►")
-    #immigrations_df_spark = spark.read.load('./sas_data')
-    #immigrations_df_spark = drop_cols(immigrations_df_spark, ['visapost', 'occup', 'entdepu', 'insnum', 'entdepa', 'entdepd', 'entdepd', 'count', 'adnum'])
-    #csv_s3(immigrations_df_spark, 'immigrations_data.csv', path)
+    print("--------Working on immigrations file--------►")
+    immigrations_df_spark = spark.read.load('./sas_data')
+    immigrations_df_spark = drop_cols(immigrations_df_spark, ['visapost', 'occup', 'entdepu', 'insnum', 'entdepa', 'entdepd', 'entdepd', 'count', 'adnum'])
+    csv_s3(key_id, secret_key, immigrations_df_spark, 'immigrations_data.csv', path)
     
     print("--------Working on i94_residence file--------►")
     i94_residence = sas_value_parser('i94cntyl', ['i94cit_res', 'country'])
-    csv_s3(i94_residence, 'i94_residence.csv', path)
+    csv_s3(key_id, secret_key, i94_residence, 'i94_residence.csv', path)
     
     print("--------Working on i94_port_of_admission file--------►")
     i94_port_of_admission = sas_value_parser('i94prtl', ['i94port', 'port'])
-    csv_s3(i94_port_of_admission, 'i94_port_of_admission.csv', path)
+    csv_s3(key_id, secret_key, i94_port_of_admission, 'i94_port_of_admission.csv', path)
     
     print("--------Working on i94_usa_state_arrival file--------►")
     i94_usa_state_arrival = sas_value_parser('i94addrl', ['i94addr', 'state'])
-    csv_s3(i94_usa_state_arrival, 'i94_usa_state_arrival.csv', path)
+    csv_s3(key_id, secret_key, i94_usa_state_arrival, 'i94_usa_state_arrival.csv', path)
     
     print("--------Working on demographics_data file--------►")
     demographics_sp_df = spark.read.option("delimiter",";").option("header", True).csv('us-cities-demographics.csv')
-    csv_s3(demographics_sp_df, 'demographics_data.csv', path)
+    csv_s3(key_id, secret_key, demographics_sp_df, 'demographics_data.csv', path)
     
     print("--------Working on Temperature_data file--------►")
     temp_sp_df = spark.read.option("header", True).csv('../../data2/GlobalLandTemperaturesByCity.csv')
     temp_sp_df = delete_nulls(temp_sp_df, ["AverageTemperature","AverageTemperatureUncertainty"])
-    csv_s3(temp_sp_df, 'Temperature_data.csv', path)
+    csv_s3(key_id, secret_key, temp_sp_df, 'Temperature_data.csv', path)
     
 if __name__ == "__main__":
     main()
