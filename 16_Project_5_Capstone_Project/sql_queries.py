@@ -8,7 +8,6 @@ config.read('dwh.cfg')
 # VARIABLES FROM dwh.cgf
 
 IMMIGRATIONS = config.get("S3","IMMIGRATIONS")
-AIRPORTS = config.get("S3", "AIRPORTS")
 DEMOGRAPHICS = config.get("S3", "DEMOGRAPHICS")
 TEMPERATURES = config.get("S3", "TEMPERATURES")
 I94_RESIDENCE = config.get("S3", "I94_RESIDENCE")
@@ -19,7 +18,6 @@ IAM_ROLE = config.get("IAM_ROLE","ARN")
 
 # Drop tables
 
-drop_airports = "DROP TABLE IF EXISTS airports;"
 drop_demographics = "DROP TABLE IF EXISTS demographics;"
 drop_immigrations = "DROP TABLE IF EXISTS immigrations;"
 drop_temperatures = "DROP TABLE IF EXISTS temperatures;"
