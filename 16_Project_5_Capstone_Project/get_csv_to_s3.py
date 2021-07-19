@@ -23,31 +23,40 @@ pd.set_option('max_columns', None)
 
 # Function to drop columns
 def drop_cols(df, *columns_to_drop):
-    df.printSchema()
+    """
+    This functions deletes the specified columns within the data frame.
+    Inputs:
+        DF ► the dataframe
+        *columns_to_drop ► columns to drop
+    """
+    
     drop = columns_to_drop[0]
-    print("cols to drop ",drop)
+    print("Deleting columns ",drop)
     df = df.drop(*drop)
-    df.printSchema()
     
     return df
 
 
 # Function to drop rows with nulls
 def delete_nulls(df, columns_w_nulls):
+    """
+    Function to delete null values in certain columns
+    Inputs:
+        df ► the data frame
+        columns_w_nulls ► columns choosen to delete their null rows
+    """
+    
     return df.na.drop(subset = columns_w_nulls)
 
-    
 # SAS_values_tables
 def sas_value_parser(value, columns):
     """Parses SAS Program file to return value as pandas dataframe
     Args:
         value (str): sas value to extract.
         columns (list): list of 2 containing column names.
-    Return:
-        None
     """
-    file = 'I94_SAS_Labels_Descriptions.SAS'
     
+    file = 'I94_SAS_Labels_Descriptions.SAS'
     file_string = ''
     
     with open(file) as f:
@@ -77,30 +86,34 @@ def sas_value_parser(value, columns):
             values.append(val)
         
     df = pd.DataFrame(list(zip(codes, values)), columns=columns)
-    df.head()
     return spark.createDataFrame(df)
     
 
 # Function to upload csv files to S3
-
 def csv_s3(key_id, secret_key, df, file_name, s3_path):
-    
-    print(df.count())
+    """
+    Function to upload CSV files to AWS S3
+    Input:
+        [Key_id, secret_key] ► AWS credentials
+        df ► the data frame
+        file_name ► the name of the csv file
+        s3_path ► name of the bucket
+    """
     
     if df.count() > 500000:
         csv_buffer = StringIO()
         df.limit(500000).toPandas().to_csv(csv_buffer)
         s3_resource = boto3.resource('s3',
-         aws_access_key_id=key_id,
-         aws_secret_access_key= secret_key)
+        aws_access_key_id="xxxxx",
+        aws_secret_access_key = "xxxxx")
         s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
     
     else:
         csv_buffer = StringIO()
         df.toPandas().to_csv(csv_buffer)
         s3_resource = boto3.resource('s3',
-         aws_access_key_id=key_id,
-         aws_secret_access_key= secret_key)
+        aws_access_key_id="xxxxx",
+        aws_secret_access_key = "xxxxxxxx")
         s3_resource.Object(s3_path, file_name).put(Body=csv_buffer.getvalue())
 
     print("{} successfully submitted to {}".format(file_name, s3_path))
