@@ -10,10 +10,12 @@
 
 <pre>Columns ► cicid | year | month | cit | res | iata | arrdate | mode | addr | depdate | bir | visa | coun | dtadfil | visapost | occup | entdepa | entdepd | entdepu | matflag | biryear | dtaddto | gender | insnum | airline | admnum | fltno | visatype</pre>
 
+I94_SAS_Labels_Descriptions.SAS / It contains the labels related to Immigration I94 data.
 
 * <a href= "https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data">GlobalLandTemperaturesByCity.csv</a> / Kaggle source (This study combines 1.6 billion temperature reports from 16 pre-existing archives)
 
 <pre>Columns ► dt | AverageTemperature | AverageTemperatureUncertainity | City | Country | Latitude | Longitude</pre>
+
 
 ## Files overview
 
@@ -21,9 +23,17 @@
 
 * sql_queries.py ► Queries to CREATE the tables and COPY queries.
 
+<<<<< Executable files >>>>>
+
+* get_csv_to_s3.py ► Script to select and upload the csv files from local to an AWS S3 intance.
+
 * create_tables.py ► Functions to execute the CREATE tables queries
 
 * etl.py ► Functions to populate the tables from S3 to Redshift
+
+* data_quality.py ► Script to implement data ckecers
+
+<<<<< Data >>>>>
 
 * dwh.cfg ► It contains the credentials needed
 
@@ -51,6 +61,10 @@ For the 4 files, only the columns containing data that I considered useless were
 ![Image_1](Images/s3.PNG)
 
 ## Execution of the project.
+
+Upload files from local to S3 <pre>python get_csv_to_s3.py</pre>
+
+![Image_123](Images/csv_to_s3.PNG)
 
 DB creation (Tables) with the command <pre>python create_tables.py</pre>
 
