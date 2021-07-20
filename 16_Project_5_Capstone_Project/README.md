@@ -117,11 +117,9 @@ For the DB we could get different info type about US immigrations / airports / d
 
 * How would Spark or Airflow be incorporated?
 
-For this project spark is used to work with dataframes because is faster than pandas.
+Spark ► For this project spark is used to work with dataframes because is faster than pandas.
 
-Working with airflow the DAG would be something like this...
-
-![Image_9](Images/airflow.PNG)
+Airflog ► Working with airflow DAGs we could even set a time to execute the whole etl process automatically
 
 * Clearly state the rationale for the choice of tools and technologies for the project.
 
