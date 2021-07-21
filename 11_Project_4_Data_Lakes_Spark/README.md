@@ -41,6 +41,8 @@ Files that contain information like:
  2.- Search for EMR service and create a cluster.
  EMR (Elastic Map Reduce) EC2 instancec with many big data technologies.
 
+ <<<<First 2 steps can be optional spark can be used local or supported by an EMR cluster>>>>>
+
  3.- Create an S3 Bucket named <code>sparkify-dend</code>.
 
  4.- Fill the requiered credentials and data in the document dl.cfg. 

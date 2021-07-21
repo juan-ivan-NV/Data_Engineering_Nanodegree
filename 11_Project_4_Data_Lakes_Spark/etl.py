@@ -165,7 +165,7 @@ def process_log_data(spark, input_data, output_data):
 def main():
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
-    output_data = ""
+    output_data = "s3a://xxxx/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
