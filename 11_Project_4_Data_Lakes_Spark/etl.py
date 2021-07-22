@@ -113,14 +113,7 @@ def process_log_data(spark, input_data, output_data):
     
     # write users table to parquet files
     users_table.write.mode('overwrite').parquet(output_data + 'users_table/')
-
-    # create timestamp column from original timestamp column
-    # get_timestamp = udf()
-    # df = 
-    
-    # create datetime column from original timestamp column
-    # get_datetime = udf()
-    # df = 
+ 
     
     # extract columns to create time table
     time_table = spark.sql("""
@@ -153,18 +146,20 @@ def process_log_data(spark, input_data, output_data):
                                 year(to_timestamp(ldt.ts/1000))      AS year,
                                 ldt.userId                           AS user_id,
                                 ldt.level                            AS level,
-                                ldt.song_id                          AS song_id,
-                                ldt.artist_id                        AS atist_id,
+                                sdt.song_id                          AS song_id,
+                                sdt.artist_id                        AS atist_id,
                                 ldt.sessionID                        AS session_id,
                                 ldt.location                         AS location,
                                 ldt.userAgent                        AS user_agent
                                 FROM log_data_table AS ldt
                                 JOIN song_data_table AS sdt 
-                                ON ldt.artists = sdt.artist_name AND ldt.song = sdt.title
+                                ON ldt.artist = sdt.artist_name AND ldt.song = sdt.title
                                 """)
 
     # write songplays table to parquet files partitioned by year and month
     songplays_table.write.mode('overwrite').partitionBy("year", "month").parquet(output_data + 'songplays_table/')
+    
+    print("-----------ETL process finished-------------")
 
 
 def main():
@@ -172,7 +167,7 @@ def main():
     input_data = "s3a://udacity-dend/"
     output_data = "s3a://jinb-sparkify/"
     
-    #process_song_data(spark, input_data, output_data)    
+    process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
 
 
