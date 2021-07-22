@@ -9,8 +9,8 @@ from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, dat
 config = configparser.ConfigParser()
 config.read('dl.cfg')
 
-os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
-os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
+os.environ['AWS_ACCESS_KEY_ID']=config["CREDENTIALS"]['AWS_ACCESS_KEY_ID']
+os.environ['AWS_SECRET_ACCESS_KEY']=config["CREDENTIALS"]['AWS_SECRET_ACCESS_KEY']
 
 
 def create_spark_session():
@@ -37,13 +37,15 @@ def process_song_data(spark, input_data, output_data):
     """
     
     # get filepath to song data file
-    song_data = input_data + 'song_data/*/*/*/*.json'
+    # song_data = input_data + 'song_data/*/*/*/*.json'
+    song_data = input_data + 'song_data/A/A/A/*.json'
+    
     
     # read song data file
     df = spark.read.json(song_data)
     
     # create song view
-    # df.createOrReplaceTempView("song_data_table")
+    df.createOrReplaceTempView("song_data_table")
     
     # extract columns to create songs table
     songs_table = spark.sql("""
@@ -52,7 +54,7 @@ def process_song_data(spark, input_data, output_data):
                             artist_id,
                             year,
                             duration
-                            FROM df
+                            FROM song_data_table
                             WHERE song_id IS NOT NULL
                             """)
     
@@ -66,7 +68,7 @@ def process_song_data(spark, input_data, output_data):
                             artist_location,
                             artist_latitude,
                             artist_longitude 
-                            FROM df
+                            FROM song_data_table
                             WHERE artist_id IS NOT NULL
                             """)
     
@@ -85,8 +87,9 @@ def process_log_data(spark, input_data, output_data):
     ► output_data: The storage location where the processed tables will be pushed 
     """
     
-    # get filepath to log data file
-    log_data = input_data + 'log_data/*.json'
+    # get filepath to log data file log_data/*/*/*.json
+    # log_data = input_data + 'log_data/*.json'
+    log_data = input_data + 'log_data/*/*/*.json'
 
     # read log data file
     df = spark.read.json(log_data)
@@ -95,7 +98,7 @@ def process_log_data(spark, input_data, output_data):
     df = df.filter(df.page == 'NextSong')
     
     # Create a log view
-    #df.createOrReplaceTempView("log_data_table")
+    df.createOrReplaceTempView("log_data_table")
 
     # extract columns for users table    
     users_table = spark.sql("""
@@ -104,7 +107,7 @@ def process_log_data(spark, input_data, output_data):
                             lastName last_name,
                             gender,
                             level
-                            FROM df
+                            FROM log_data_table
                             WHERE userId IS NOT NULL
                             """)
     
@@ -127,7 +130,7 @@ def process_log_data(spark, input_data, output_data):
                             weekofyear(T.time_t)  AS week,
                             month(T.time_t)       AS month,
                             year(T.time_t)        AS year,
-                            dayofweek(T.time_t)   AS weekday,
+                            dayofweek(T.time_t)   AS weekday
                             FROM 
                             (SELECT to_timestamp(ldt.ts/1000) as time_t
                             FROM log_data_table ldt
@@ -138,14 +141,16 @@ def process_log_data(spark, input_data, output_data):
     time_table.write.mode('overwrite').partitionBy("year", "month").parquet(output_data + 'time_table/')
 
     # read in song data to use for songplays table
-    # song_df = 
+    song_df = spark.read.json(input_data + 'song_data/A/A/A/*.json')
+    song_df.createOrReplaceTempView("song_data_table")
+    
 
     # extract columns from joined song and log datasets to create songplays table 
-    songplays_table = spark.slq("""
+    songplays_table = spark.sql("""
                                 SELECT monotonically_increasing_id() AS songplay_id,
                                 to_timestamp(ldt.ts/1000)            AS start_time,
                                 month(to_timestamp(ldt.ts/1000))     AS month,
-                                year(mestamp(ldt.ts/1000))           AS year,
+                                year(to_timestamp(ldt.ts/1000))      AS year,
                                 ldt.userId                           AS user_id,
                                 ldt.level                            AS level,
                                 ldt.song_id                          AS song_id,
@@ -165,9 +170,9 @@ def process_log_data(spark, input_data, output_data):
 def main():
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
-    output_data = "s3a://xxxx/"
+    output_data = "s3a://jinb-sparkify/"
     
-    process_song_data(spark, input_data, output_data)    
+    #process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
 
 
