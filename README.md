@@ -50,3 +50,5 @@ The source data resides in S3 and is processed in Sparkify's data warehouse in A
 # Graduated!!!
 
 <a href= "https://confirm.udacity.com/YGNADWQH">Certificate</a>
+
+![Certificate](Images/certificate.JPG)
